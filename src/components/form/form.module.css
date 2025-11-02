@@ -1,0 +1,87 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+
+.myContainer{
+    height: 500px;
+    padding: 20px;
+    border-radius: 10px;
+    /*background: var(--bs-gray-800)*/
+}
+
+/*design animation form-container */
+.formContainer {
+    position: relative;
+    /*overflow: hidden;*/
+}
+.formContainer .form {
+    position: absolute;
+    bottom: 120%;
+    opacity: 0;
+    filter: blur(10px);
+    transition: all 1s ease-in-out;
+}
+.formContainer .form.active {
+    opacity: 1;
+    filter: blur(0);
+    bottom: 0;
+}
+
+/* ------------------ design carousel ---------------------- */
+.mySwiper, .mySwiper .slide img {
+    width: auto;
+    height: 100%;
+    /*background: yellow;*/
+}
+
+.mySwiper .slide {
+    position: relative;
+}
+.mySwiper .slide img{
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+
+/*design form */
+.formContainer form input{
+    border: none;
+    color: white;
+}
+.formContainer form input::placeholder{
+    color: #fff;
+}
+.formContainer form input:focus{
+    box-shadow: none;
+    border: 1px solid #fff;
+    color: white;
+}
+
+.anotherLink {
+    color: #fff;
+    background: #000;
+    position: relative;
+}
+
+.anotherLink p{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--bs-dark);
+    padding: 0 10px;
+    /*border: 1px solid var(--bs-secondary);*/
+    /*border-radius: 20px;*/
+    /*border-top: none;*/
+    /*border-bottom: none;*/
+}
+
+.anotherLink .line {
+    background: var(--bs-secondary);
+    width: 100%;
+    height: 1px;
+}
