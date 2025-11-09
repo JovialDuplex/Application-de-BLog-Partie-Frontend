@@ -5,6 +5,7 @@ import image19 from "../../assets/images/image19.png";
 import {Swiper, SwiperSlide} from "swiper/react";
 import {Navigation, Autoplay, Pagination} from "swiper/modules";
 import "swiper/swiper.css";
+import axios from "axios";
 import {useEffect, useState} from "react";
 
 const Form = function(){
@@ -12,19 +13,89 @@ const Form = function(){
     const [viewPasswordLogin, setViewPasswordLogin] = useState(false);
     const [loginFormData, setLoginFormData] = useState({
         user_email: "",
-        user_password: ""
+        user_password: "",
+    });
+    const [registerFormData, setRegisterFormData] = useState({
+        user_name: "",
+        user_email: "",
+        user_password: "",
     });
 
+    // Manage form errors---------------------
+    const [loginFormError, setLoginFormError] = useState({
+        user_email: "",
+        user_password: "",
+    });
+    const [registerFormError, setRegisterFormError] = useState({
+        user_name: "",
+        user_email: "",
+        user_password: "",
+    });
+    const [loginErrorValid, setLoginErrorValid] = useState("");
+    const [registerErrorValid, setRegisterErrorValid] = useState("");
+
+    //control inputs of form
+    const changeLoginValues = (event)=>{
+        setLoginFormData({...loginFormData, [event.target.name]: event.target.value});
+    }
+    const changeRegisterValues = (event)=>{
+        setRegisterFormData({...registerFormData, [event.target.name]: event.target.value});
+    }
+
+    // functions for displaying each form
     const displayLoginForm = ()=>setActiveForm(false);
     const displayRegisterForm = ()=>setActiveForm(true);
+
     const toogleViewPassword = ()=>{setViewPasswordLogin(!viewPasswordLogin);}
+
+    // reset all forms when we change form
+    useEffect(()=>{
+        setLoginFormData({user_email: "", user_password: "",});
+        setLoginErrorValid("");
+        setLoginFormError({user_email: "", user_password: "", });
+
+        setRegisterFormData({user_name: "", user_email: "", user_password: "",});
+        setRegisterFormError({user_name: "", user_email: "", user_password: "", });
+        setRegisterErrorValid("");
+    }, [activeForm]);
+
+    const submitLoginForm = async (event)=>{
+        event.preventDefault();
+        setLoginFormError({user_email: "", user_password: ""});
+
+        const response = await axios.post("http://localhost:3001/api/users/login", loginFormData);
+        if(await response.data.error) {
+            // check if some field of the form is not valid
+
+            const errorList = await response.data.errorList;
+            console.log("erreur survenue lors de la validation du formulaire ");
+            // console.log(errorList);
+            setLoginFormError(prev => {
+                const newErrors = {...prev};
+                errorList.forEach(error => {
+                    if (newErrors.hasOwnProperty(error.path)) {
+                        newErrors[error.path] = error.message;
+                    }
+                });
+                return newErrors;
+            });
+        }
+        else if (await response.data.errorValid) {
+            // verifying if an error occurred when the validation form (credential error)
+            setLoginErrorValid(await response.data.message);
+        }
+        else {
+            console.log("aucune erreur lors de la validation du formulaire ");
+            console.log(await response.data);
+        }
+
+    };
 
 
     return (
         <div className={`mx-2 container ${style.myContainer} bg-dark`}>
             <div className="row h-100 px-4">
-                <div
-                    className="rounded-4 bg-warning h-100 col-md-5 col-lg-6 col d-lg-flex d-none flex-column position-relative">
+                <div className="rounded-4 bg-warning h-100 col-md-5 col-lg-6 col d-lg-flex d-none flex-column position-relative">
                     <div className="header-form-message d-flex p-1 w-100 justify-content-between ">
                         <div className="brand-logo fw-bold">
                             <span className="text-secondary fs-2 fas fa-bowl-food"></span>
@@ -62,6 +133,7 @@ const Form = function(){
                 </div>
 
                 <div className={`${style.formContainer} col h-100 col-sm-12 col-md-12 col-lg-6`}>
+
                     <div id="register-form" className={`h-100 w-100 ${activeForm ? style.active : ""} ${style.form}`}>
                         <h1 className="text-center fs-1 fw-bold text-white"> Create an account </h1>
                         <p className="text-secondary"> I already have an Account
@@ -69,13 +141,13 @@ const Form = function(){
                         </p>
 
                         <form method="post" action="#">
-                            <input className="form-control bg-secondary" type="text" name="user_name" placeholder="Name"
-                                   required /><br/>
+                            <input className={`form-control bg-secondary`} type="text" name="user_name" placeholder="Name"
+                                   value={registerFormData.user_name} onChange={changeRegisterValues}/><br/>
                             <input className="form-control bg-secondary" type="email" name="user_email" placeholder="Email"
-                                   required /><br/>
+                                   value={registerFormData.user_email} onChange={changeRegisterValues}/><br/>
                             <div className="input-group">
                                 <input className="form-control bg-secondary" type={`${!viewPasswordLogin ? "password" : "text"}`} name="user_password"
-                                       placeholder="Password" required/><br/>
+                                       placeholder="Password" value={registerFormData.user_password} onChange={changeRegisterValues}/><br/>
                                 <button type="button" onClick={toogleViewPassword} className="fas btn bg-secondary"><span className={`fas ${!viewPasswordLogin ? "fa-eye" : "fa-eye-slash"}`}></span></button>
                             </div>
                             <br/>
@@ -90,17 +162,17 @@ const Form = function(){
                         </div>
                         <br/>
 
-                        <div className="social-link d-flex justify-content-between align-items-center">
+                        <div className="social-link d-flex justify-content-center gap-5 gap-sm-5 justify-content-sm-center justify-content-md-between align-items-center">
                             <div><a href="#" className="btn btn-secondary bg-transparent"> <span
-                                className="fab fa-google"></span> Google </a>
+                                className="fab fa-google"></span> <span className="d-none d-sm-inline-block">Google </span></a>
 
                             </div>
                             <div><a href="#" className="btn btn-secondary bg-transparent"> <span
-                                className="fab fa-github"></span> Github </a>
+                                className="fab fa-github"></span> <span className="d-none d-sm-inline-block">Github</span> </a>
 
                             </div>
                             <div><a href="#" className="btn btn-secondary bg-transparent"> <span
-                                className="fab fa-facebook"></span> Facebook </a>
+                                className="fab fa-facebook"></span> <span className="d-none d-sm-inline-block">Facebook</span></a>
 
                             </div>
                         </div>
@@ -108,23 +180,29 @@ const Form = function(){
                     </div>
 
                     <div id="login-form" className={`${!activeForm ? style.active : ""} ${style.form} h-100 w-100`}>
+
                         <h1 className="text-center fs-1 fw-bold text-white"> Login </h1>
                         <p className="text-secondary">
                             I don't have an Account
                             <a href="#" id="register-bt" onClick={displayRegisterForm} className="text-decoration-none fw-bold text-warning"> Register </a>
                         </p>
 
-                        <form method="post" action="#">
-                            <input className="form-control bg-secondary" type="email" name="user_email" placeholder="Email"
-                                   required/><br/>
-                            <div className="input-group">
-                                <input className="form-control bg-secondary" type={`${!viewPasswordLogin ? "password" : "text"}`} name="user_password"
-                                       placeholder="Password" required/><br/>
-                                <button type={"button"} onClick={toogleViewPassword} className={` btn bg-secondary`}> <span className={`fas ${!viewPasswordLogin ? "fa-eye": "fa-eye-slash"}`}> </span></button>
-                            </div>
+                        <form onSubmit={submitLoginForm}>
+                            {loginErrorValid != "" ? <div className="text-danger fw-bold text-decoration-underline rounded-3 fs-5 text-center"> {loginErrorValid} </div> : ""} <br/>
+                            <input className={`form-control ${loginFormError.user_email != "" ? "bg-danger text-white" : "bg-secondary"}`} type="text" name="user_email" placeholder="Email"
+                                   value={loginFormData.user_email} onChange={changeLoginValues}/>
+                            {loginFormError.user_email != "" ? <p className="text-danger"><span className="fas fa-warning"> </span> {loginFormError.user_email}</p>: ""}
                             <br/>
 
-                            <button className="btn fw-bold btn-warning btn-block w-100" type="submit">Register</button>
+                            <div className={`input-group`}>
+                                <input className={`form-control ${loginFormError.user_password != "" ? "bg-danger text-white" : "bg-secondary"}`} type={`${!viewPasswordLogin ? "password" : "text"}`} name="user_password"
+                                       placeholder="Password" value={loginFormData.user_password} onChange={changeLoginValues}/><br/>
+                                <button type={"button"} onClick={toogleViewPassword} className={` btn ${loginFormError.user_password != "" ? "bg-danger text-white" : "bg-secondary"}`}> <span className={`fas ${viewPasswordLogin ? "fa-eye": "fa-eye-slash"}`}> </span></button>
+                            </div>
+                            {loginFormError.user_password != "" ? <p className="text-danger"><span className="fas fa-warning"> </span> {loginFormError.user_password}</p>: ""}
+                            <br/>
+
+                            <button className="btn fw-bold btn-warning btn-block w-100" type="submit">Login</button>
                         </form>
                         <br/>
 
@@ -134,17 +212,17 @@ const Form = function(){
                         </div>
                         <br/>
 
-                        <div className="social-link d-flex justify-content-between align-items-center">
+                        <div className="social-link d-flex justify-content-center gap-5 gap-sm-5 justify-content-sm-center justify-content-md-between align-items-center">
                             <div><a href="#" className="btn btn-secondary bg-transparent"> <span
-                                className="fab fa-google"></span> Google </a>
+                                className="fab fa-google"></span> <span className="d-none d-sm-inline-block">Google </span></a>
 
                             </div>
                             <div><a href="#" className="btn btn-secondary bg-transparent"> <span
-                                className="fab fa-github"></span> Github </a>
+                                className="fab fa-github"></span> <span className="d-none d-sm-inline-block">Github</span> </a>
 
                             </div>
                             <div><a href="#" className="btn btn-secondary bg-transparent"> <span
-                                className="fab fa-facebook"></span> Facebook </a>
+                                className="fab fa-facebook"></span> <span className="d-none d-sm-inline-block">Facebook</span></a>
 
                             </div>
                         </div>
