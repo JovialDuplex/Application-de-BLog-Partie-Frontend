@@ -20,15 +20,17 @@
 }
 .formContainer .form {
     position: absolute;
-    bottom: 120%;
+    top: 120%;
+    /*display: none;*/
     opacity: 0;
     filter: blur(10px);
     transition: all 1s ease-in-out;
 }
 .formContainer .form.active {
     opacity: 1;
+    /*display: block;*/
     filter: blur(0);
-    bottom: 0;
+    top: 0;
 }
 
 /* ------------------ design carousel ---------------------- */

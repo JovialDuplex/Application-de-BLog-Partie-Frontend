@@ -1,19 +1,24 @@
 import "./navbar.css";
 import {NavLink, Link} from "react-router-dom";
-import {useState} from "react";
-import {Button, Offcanvas, Container, Image} from "react-bootstrap";
+import {useEffect, useState} from "react";
+import {Button, Offcanvas, Container, Image, Dropdown} from "react-bootstrap";
 import {useAuthContext} from "../../context/authContext";
 import image from "../../assets/images/image19.png";
+import axios from "axios";
 
 const NavBar = function(){
     const [show, setShow] = useState(false);
     const [enter, setEnter] = useState(false);
-    const {isAuth} = useAuthContext();
+    const {isAuth, user, logout, checkIfWasUserLoggedIn} = useAuthContext();
 
-    console.log(isAuth);
 
     const handleShow=()=>{setShow(true);}
     const handleClose=()=>{setShow(false);}
+
+    useEffect(()=>{
+        checkIfWasUserLoggedIn();
+    }, []);
+
     return (
 
         <nav>
@@ -37,10 +42,19 @@ const NavBar = function(){
                     {isAuth ? <li className="link"> <NavLink to={"/dashboard"}> Dashboard </NavLink></li> : ""}
                     <li>
                         {isAuth ? (
-                            <Link to={"/user"} className="d-flex align-items-center fw-bold mx-2 gap-2 text-decoration-none text-light">
-                                <span className="fas fa-user-circle fs-4"></span>
-                                <span> Jovial Duplex </span>
-                            </Link>
+                            <>
+                                <Dropdown>
+                                    <Dropdown.Toggle className="bg-transparent border-0"><span className="fas fa-user-circle fs-4"></span></Dropdown.Toggle>
+                                    <Dropdown.Menu>
+                                        <Dropdown.Item className="text-center fw-bold fs-6"> {user.user_name.toUpperCase()} </Dropdown.Item>
+                                        <Link to={`/users/get-user/${user._id}`} className="dropdown-item"> <Button variant="primary"> More informations </Button></Link>
+                                        <Dropdown.Item> <Button className="w-100" variant="danger" onClick={logout}> Logout </Button> </Dropdown.Item>
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                                {/*<Link to={"/user"} className="d-flex align-items-center fw-bold mx-2 gap-2 text-decoration-none text-light">*/}
+                                {/*    <span>{user.user_name}</span>*/}
+                                {/*</Link>*/}
+                            </>
                         ) : (
                             <Link to={"/login"} className={`btn btn-outline-light ${enter ? "bg-light text-dark" : "bg-transparent text-light"} rounded-5 fw-bold px-4`} onMouseEnter={()=>{setEnter(true);}} onMouseLeave={()=>{setEnter(false);}} >
                                 Login
@@ -69,7 +83,7 @@ const NavBar = function(){
                                     <>
                                         <Image src={image} width={100} height={100} rounded={true} alt={"user image"} fluid={true} className="p-2 border border-2"/>
                                         <div>
-                                            <span className="fw-bold">EMILIA DELAPORTE </span> <br/><br />
+                                            <span className="fw-bold">{user.user_name} </span> <br/><br />
                                             <Button> More Informations </Button>
                                         </div>
                                     </>

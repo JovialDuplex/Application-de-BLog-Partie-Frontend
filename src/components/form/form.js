@@ -1,15 +1,16 @@
-import style from "./form.module.css";
-import image17 from "../../assets/images/image17.png";
-import image18 from "../../assets/images/image18.png";
-import image19 from "../../assets/images/image19.png";
 import {Swiper, SwiperSlide} from "swiper/react";
 import {Navigation, Autoplay, Pagination} from "swiper/modules";
-import "swiper/swiper.css";
-import axios from "axios";
+import {useAuthContext} from "../../context/authContext";
 import {useEffect, useState} from "react";
+import {useNavigate} from "react-router-dom";
+import image19 from "../../assets/images/image19.png";
+import image18 from "../../assets/images/image18.png";
+import image17 from "../../assets/images/image17.png";
+import style from "./form.module.css";
+import "swiper/swiper.css";
 
 const Form = function(){
-    const [activeForm, setActiveForm] = useState(true);
+    const [activeForm, setActiveForm] = useState(false);
     const [viewPasswordLogin, setViewPasswordLogin] = useState(false);
     const [loginFormData, setLoginFormData] = useState({
         user_email: "",
@@ -21,18 +22,8 @@ const Form = function(){
         user_password: "",
     });
 
-    // Manage form errors---------------------
-    const [loginFormError, setLoginFormError] = useState({
-        user_email: "",
-        user_password: "",
-    });
-    const [registerFormError, setRegisterFormError] = useState({
-        user_name: "",
-        user_email: "",
-        user_password: "",
-    });
-    const [loginErrorValid, setLoginErrorValid] = useState("");
-    const [registerErrorValid, setRegisterErrorValid] = useState("");
+    // get context information
+    const {isAuth, login, loginFormError, loginErrorValid} = useAuthContext();
 
     //control inputs of form
     const changeLoginValues = (event)=>{
@@ -47,50 +38,23 @@ const Form = function(){
     const displayRegisterForm = ()=>setActiveForm(true);
 
     const toogleViewPassword = ()=>{setViewPasswordLogin(!viewPasswordLogin);}
+    const navigate = useNavigate();
 
     // reset all forms when we change form
-    useEffect(()=>{
-        setLoginFormData({user_email: "", user_password: "",});
-        setLoginErrorValid("");
-        setLoginFormError({user_email: "", user_password: "", });
-
-        setRegisterFormData({user_name: "", user_email: "", user_password: "",});
-        setRegisterFormError({user_name: "", user_email: "", user_password: "", });
-        setRegisterErrorValid("");
-    }, [activeForm]);
+    // useEffect(()=>{
+    //     setLoginFormData({user_email: "", user_password: "",});
+    //     setLoginErrorValid("");
+    //     setLoginFormError({user_email: "", user_password: "", });
+    //
+    //     setRegisterFormData({user_name: "", user_email: "", user_password: "",});
+    //     setRegisterFormError({user_name: "", user_email: "", user_password: "", });
+    //     setRegisterErrorValid("");
+    // }, [activeForm]);
 
     const submitLoginForm = async (event)=>{
         event.preventDefault();
-        setLoginFormError({user_email: "", user_password: ""});
-
-        const response = await axios.post("http://localhost:3001/api/users/login", loginFormData);
-        if(await response.data.error) {
-            // check if some field of the form is not valid
-
-            const errorList = await response.data.errorList;
-            console.log("erreur survenue lors de la validation du formulaire ");
-            // console.log(errorList);
-            setLoginFormError(prev => {
-                const newErrors = {...prev};
-                errorList.forEach(error => {
-                    if (newErrors.hasOwnProperty(error.path)) {
-                        newErrors[error.path] = error.message;
-                    }
-                });
-                return newErrors;
-            });
-        }
-        else if (await response.data.errorValid) {
-            // verifying if an error occurred when the validation form (credential error)
-            setLoginErrorValid(await response.data.message);
-        }
-        else {
-            console.log("aucune erreur lors de la validation du formulaire ");
-            console.log(await response.data);
-        }
-
+        login(loginFormData);
     };
-
 
     return (
         <div className={`mx-2 container ${style.myContainer} bg-dark`}>
@@ -102,7 +66,7 @@ const Form = function(){
                             <span className="text-secondary fs-3"> Food </span>
                             <span className="text-dark fs-3"> Blog</span>
                         </div>
-                        <button className="btn btn-secondary bg-opacity-50 text-white rounded-5"> Bact to website <span
+                        <button className="btn btn-secondary bg-opacity-50 text-white rounded-5" onClick={()=>navigate("/")}> Bact to website <span
                             className="fas fa-arrow-circle-right"></span></button>
                     </div>
 

@@ -15,6 +15,7 @@
 }
 
 .appBody .page {
+    color: white;
     flex-grow: 1;
     background: var(--bs-gray-700);
 }
