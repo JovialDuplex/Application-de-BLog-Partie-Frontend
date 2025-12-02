@@ -1,0 +1,16 @@
+.mainContainer {
+    display: flex;
+    background: var(--bs-gray-900);
+    align-items: center;
+    padding: 7px 15px;
+    border-radius: 20px;
+    gap: 5px;
+}
+.mainContainer div {
+    /*background: tan;*/
+}
+.mainContainer div img{
+    padding: 2px;
+    border-radius: 50%;
+    border: 1px solid white;
+}

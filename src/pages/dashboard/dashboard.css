@@ -1,0 +1,22 @@
+.main-container {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+}
+.sidenav li a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+.main-part {
+    display: flex;
+    flex-direction: column;
+}
+.main-part .articles-list-container {
+    flex-grow: 1;
+}
+
+/*.articles-list-container .article-list {*/
+/*    display: grid;*/
+/*    grid-template-columns: repeat(4, 1fr);*/
+/*    grid-template-rows: auto;*/
+/*}*/

@@ -1,0 +1,124 @@
+.mainContainer {
+    display: grid;
+    height: 95%;
+    background: var(--bs-gray-800);
+    max-width: 1000px;
+    padding: 10px;
+    grid-template-rows: 1fr 6fr 1fr;
+    border-radius: 10px;
+    grid-template-areas: "formTitle formTitle"
+                         "block1 block2"
+                         "submitButton submitButton";
+
+}
+.formTitle {
+    grid-area: formTitle;
+    text-decoration: underline;
+    /*background: red;*/
+}
+
+/*design block 1 */
+.block1 {
+    grid-area: block1;
+    display: flex;
+    flex-direction: column;
+    /*gap: 100px;*/
+    justify-content: space-between;
+    padding: 10px;
+    /*background: blue;*/
+}
+
+/*design input field */
+.block1 .inputField {
+    width: 100%;
+    position: relative;
+    height: auto;
+    /*background: red;*/
+}
+.block1 .inputField label {
+    position: absolute;
+    top: 0;
+    left: 10px;
+    font-weight: bold;
+    /*color: black;*/
+}
+.block1 .inputField input {
+    height: 50px;
+    border-radius: 5px;
+}
+.block1 .inputField textarea {
+    height: 150px;
+    resize: none;
+}
+.block1 .inputField input, .block1 .inputField textarea {
+    width: 100%;
+    background: var(--bs-gray-600);
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    padding: 5px;
+    color: white;
+}
+
+/* design block 2 ---------------------------------------------------- */
+.block2 {
+    grid-area: block2;
+    background: var(--bs-gray-600);
+    border-radius: 10px;
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    position: relative;
+    /*padding: 10px;*/
+}
+.block2 img {
+    /*border-radius: 10px;*/
+    /*padding: 10px;*/
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 100%;
+    width: 100%;
+    /*object-fit: fill;*/
+}
+.block2 span.imageLogo{
+    color: black;
+    font-size: 10rem;
+}
+
+/* design add article button ---------------------------------------------- */
+.submitButton {
+    grid-area: submitButton;
+
+    /*background: pink;*/
+    margin: 10px;
+}
+
+/* design field when we have an error */
+.error {
+    animation: errorAnimation 2s linear;
+}
+
+@keyframes errorAnimation {
+    0% {
+        background: var(--bs-danger);
+    }
+    25%{
+        background: var(--bs-gray-600);
+    }
+    50% {
+        background: var(--bs-danger);
+    }
+    75%{
+        background: var(--bs-gray-600);
+    }
+    100% {
+        background: var(--bs-danger);
+    }
+
+
+}

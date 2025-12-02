@@ -80,6 +80,7 @@ export function useUser(){
         localStorage.removeItem("token");
         setUser(null);
         setIsAuth(false);
+        navigate("/");
     };
 
     const checkIfWasUserLoggedIn = async function(){
@@ -99,7 +100,7 @@ export function useUser(){
                 console.log(data.userId);
                 // get user login
                 const response2 = await axios.get(`http://localhost:3001/api/users/get-user/${userId}`, {
-                    headers: {authorization: token}
+                    headers: {authorization: `Bearer ${token}`}
                 });
                 const data2 = await response2.data;
                 console.log(data2);

@@ -1,0 +1,33 @@
+.searchBar {
+    display: grid;
+    grid-template-columns: 40px 1fr auto;
+    align-items: center;
+    gap: 5px;
+    background: var(--bs-gray-500);
+    border-radius: 50px;
+}
+
+.searchBar input{
+    background: transparent;
+    outline: none;
+    border: none;
+    height: 30px;
+    font-size: 1.2rem;
+    color: var(--bs-gray-900);
+}
+.searchBar input::placeholder {
+    color: var(--bs-gray-700);
+}
+.searchBar select{
+    /*background: var(--bs-gray-400);*/
+    border-radius: 20px;
+    outline: none;
+    border: none;
+    cursor: pointer;
+}
+.searchBar select:focus{
+    box-shadow: none;
+}
+.searchBar select option {
+    background: red;
+}
